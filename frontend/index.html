@@ -1,182 +1,182 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Olive Chatbot SaaS</title>
-<link rel="stylesheet" href="style.css">
-<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
-<style>
-body { font-family: Arial; background: #f5f5f5; }
-.chat-container { width: 400px; margin: 50px auto; background: white; border-radius: 10px; padding: 10px; position: relative; }
-.chat-header { font-weight: bold; text-align: center; margin-bottom: 5px; }
-.chat-status { font-size: 12px; color: #555; text-align: center; margin-bottom: 5px; }
-.chat-messages { height: 300px; overflow-y: auto; border: 1px solid #ddd; padding: 5px; border-radius: 5px; background: #fafafa; }
-.message { padding: 5px; margin: 5px 0; border-radius: 5px; }
-.user { background: #cce5ff; text-align: right; }
-.bot { background: #e2e3e5; text-align: left; }
-.chat-input { display: flex; margin-top: 10px; }
-.chat-input input { flex: 1; padding: 5px; }
-.chat-input button { padding: 5px; }
-#micBtn, #upgradeBtn, #historyBtn { margin-top: 10px; padding: 5px; cursor: pointer; }
-#micBtn.recording { background: #ff4d4d; color: white; border-radius: 5px; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Olive Chatbot SaaS</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+  <style>
+    body { font-family: Arial; background: #f5f5f5; }
+    .chat-container { width: 400px; margin: 50px auto; background: white; border-radius: 10px; padding: 10px; position: relative; }
+    .chat-header { font-weight: bold; text-align: center; margin-bottom: 5px; }
+    .chat-status { font-size: 12px; color: #555; text-align: center; margin-bottom: 5px; }
+    .chat-messages { height: 300px; overflow-y: auto; border: 1px solid #ddd; padding: 5px; border-radius: 5px; background: #fafafa; }
+    .message { padding: 5px; margin: 5px 0; border-radius: 5px; }
+    .user { background: #cce5ff; text-align: right; }
+    .bot { background: #e2e3e5; text-align: left; }
+    .chat-input { display: flex; margin-top: 10px; }
+    .chat-input input { flex: 1; padding: 5px; }
+    .chat-input button { padding: 5px; }
+    #micBtn, #upgradeBtn, #historyBtn { margin-top: 10px; padding: 5px; cursor: pointer; }
+    #micBtn.recording { background: #ff4d4d; color: white; border-radius: 5px; }
 
-/* Floating buttons (mic right, history left) */
-#micBtn, #historyBtn {
-position: absolute;
-bottom: 60px;
-width: 50px;
-height: 50px;
-border-radius: 50%;
-background: #6a7f4e;
-color: white;
-border: none;
-font-size: 20px;
-display: flex;
-align-items: center;
-justify-content: center;
-box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-}
+    /* Floating buttons (mic right, history left) */
+    #micBtn, #historyBtn {
+      position: absolute;
+      bottom: 60px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: #6a7f4e;
+      color: white;
+      border: none;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
 
-#micBtn { right: 20px; }
-#historyBtn { left: 20px; }
-</style>
+    #micBtn { right: 20px; }
+    #historyBtn { left: 20px; }
+  </style>
 </head>
 <body>
-<div class="chat-container">
-<div class="chat-header">WAN Chatbot SaaS</div>
-<div class="chat-status" id="chatStatus">Plan: Free | Queries used: 0</div>
-<div class="chat-messages" id="chatMessages"></div>
-<div class="chat-input">
-<input type="text" id="userInput" placeholder="Send a message...">
-<button onclick="sendMessage()">➤</button>
-</div>
-<button id="micBtn">🎤</button>
-<button id="historyBtn">📜</button>
-</div>
+  <div class="chat-container">
+    <div class="chat-header">WAN Chatbot SaaS</div>
+    <div class="chat-status" id="chatStatus">Plan: Free | Queries used: 0</div>
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="chat-input">
+      <input type="text" id="userInput" placeholder="Send a message...">
+      <button onclick="sendMessage()">➤</button>
+    </div>
+    <button id="micBtn">🎤</button>
+    <button id="historyBtn">📜</button>
+  </div>
 
-<div class="bot-animation">
-<lottie-player
-src="https://lottie.host/e777123a-66f1-4ca6-b4f4-6fef9ae28d84/LD24ZYKBT5.json"
-background="transparent"
-speed="1"
-style="width: 150px; height: 150px;"
-loop autoplay>
-</lottie-player>
-</div>
+  <div class="bot-animation">
+    <lottie-player 
+      src="https://lottie.host/e777123a-66f1-4ca6-b4f4-6fef9ae28d84/LD24ZYKBT5.json"  
+      background="transparent"  
+      speed="1"  
+      style="width: 150px; height: 150px;"  
+      loop autoplay>
+    </lottie-player>
+  </div>
 
-<script>
-const USER_ID = "Samuel"; // mock user
-const API_URL = "http://127.0.0.1:8000";
+  <script>
+    const USER_ID = "Samuel"; // mock user
+    const API_URL = "http://127.0.0.1:8000";
 
-const statusEl = document.getElementById("chatStatus");
+    const statusEl = document.getElementById("chatStatus");
 
-// Update the plan & queries status
-function updateStatus(plan, queries) {
-statusEl.innerText = `Plan: ${plan.charAt(0).toUpperCase() + plan.slice(1)} | Queries used: ${queries}`;
-}
+    // Update the plan & queries status
+    function updateStatus(plan, queries) {
+      statusEl.innerText = `Plan: ${plan.charAt(0).toUpperCase() + plan.slice(1)} | Queries used: ${queries}`;
+    }
 
-function addMessage(text, sender) {
-const chatBox = document.getElementById("chatMessages");
-const msg = document.createElement("div");
-msg.classList.add("message", sender);
-msg.innerText = text;
-chatBox.appendChild(msg);
-chatBox.scrollTop = chatBox.scrollHeight;
-}
+    function addMessage(text, sender) {
+      const chatBox = document.getElementById("chatMessages");
+      const msg = document.createElement("div");
+      msg.classList.add("message", sender);
+      msg.innerText = text;
+      chatBox.appendChild(msg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
 
-async function sendMessage() {
-const input = document.getElementById("userInput");
-const message = input.value.trim();
-if (!message) return;
-addMessage(message, "user");
-input.value = "";
+    async function sendMessage() {
+      const input = document.getElementById("userInput");
+      const message = input.value.trim();
+      if (!message) return;
+      addMessage(message, "user");
+      input.value = "";
 
-try {
-const res = await fetch(`${API_URL}/chat`, {
-method: "POST",
-headers: { "Content-Type": "application/json" },
-body: JSON.stringify({ user_id: USER_ID, message })
-});
-const data = await res.json();
-addMessage(data.reply, "bot");
+      try {
+        const res = await fetch(`${API_URL}/chat`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user_id: USER_ID, message })
+        });
+        const data = await res.json();
+        addMessage(data.reply, "bot");
 
-// Update plan & queries
-updateStatus(data.plan, data.queries_used);
-} catch (err) {
-addMessage("Error connecting to server.", "bot");
-}
-}
+        // Update plan & queries
+        updateStatus(data.plan, data.queries_used);
+      } catch (err) {
+        addMessage("Error connecting to server.", "bot");
+      }
+    }
 
-// Load previous history and update status
-async function loadHistory() {
-try {
-const res = await fetch(`${API_URL}/history/${USER_ID}`);
-const data = await res.json();
-document.getElementById("chatMessages").innerHTML = ""; // clear chat
-data.history.forEach(item => {
-addMessage(item.user, "user");
-addMessage(item.bot, "bot");
-});
-updateStatus(data.plan, data.queries_used);
-} catch (err) {
-console.log("No previous history.");
-}
-}
+    // Load previous history and update status
+    async function loadHistory() {
+      try {
+        const res = await fetch(`${API_URL}/history/${USER_ID}`);
+        const data = await res.json();
+        document.getElementById("chatMessages").innerHTML = ""; // clear chat
+        data.history.forEach(item => {
+          addMessage(item.user, "user");
+          addMessage(item.bot, "bot");
+        });
+        updateStatus(data.plan, data.queries_used);
+      } catch (err) {
+        console.log("No previous history.");
+      }
+    }
 
-// Attach history button
-document.getElementById("historyBtn").addEventListener("click", loadHistory);
+    // Attach history button
+    document.getElementById("historyBtn").addEventListener("click", loadHistory);
 
-// Upgrade user to Premium
-document.getElementById("upgradeBtn")?.addEventListener("click", async () => {
-try {
-const res = await fetch(`${API_URL}/upgrade`, {
-method: "POST",
-headers: { "Content-Type": "application/json" },
-body: JSON.stringify({ user_id: USER_ID })
-});
-const data = await res.json();
-alert(data.message);
-updateStatus("premium", 0); // reset queries for demo
-} catch (err) {
-alert("Upgrade failed.");
-}
-});
+    // Upgrade user to Premium
+    document.getElementById("upgradeBtn")?.addEventListener("click", async () => {
+      try {
+        const res = await fetch(`${API_URL}/upgrade`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user_id: USER_ID })
+        });
+        const data = await res.json();
+        alert(data.message);
+        updateStatus("premium", 0); // reset queries for demo
+      } catch (err) {
+        alert("Upgrade failed.");
+      }
+    });
 
-// Speech-to-text
-const micBtn = document.getElementById("micBtn");
-let recognition;
-const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    // Speech-to-text
+    const micBtn = document.getElementById("micBtn");
+    let recognition;
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
-if (SpeechRecognition) {
-recognition = new SpeechRecognition();
-recognition.continuous = false;
-recognition.interimResults = false;
-recognition.lang = "en-US";
+    if (SpeechRecognition) {
+      recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = "en-US";
 
-recognition.onstart = () => micBtn.classList.add("recording");
-recognition.onend = () => micBtn.classList.remove("recording");
+      recognition.onstart = () => micBtn.classList.add("recording");
+      recognition.onend = () => micBtn.classList.remove("recording");
 
-recognition.onresult = (event) => {
-const transcript = event.results[0][0].transcript;
-document.getElementById("userInput").value = transcript;
-sendMessage();
-};
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById("userInput").value = transcript;
+        sendMessage();
+      };
 
-let isListening = false;
-micBtn.onclick = () => {
-if (!isListening) {
-recognition.start();
-isListening = true;
-} else {
-recognition.stop();
-isListening = false;
-}
-};
-} else {
-micBtn.disabled = true;
-micBtn.innerText = "Not Supported";
-}
-</script>
+      let isListening = false;
+      micBtn.onclick = () => {
+        if (!isListening) {
+          recognition.start();
+          isListening = true;
+        } else {
+          recognition.stop();
+          isListening = false;
+        }
+      };
+    } else {
+      micBtn.disabled = true;
+      micBtn.innerText = "Not Supported";
+    }
+  </script>
 </body>
 </html>
