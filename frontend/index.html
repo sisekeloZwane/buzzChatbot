@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Olive Chatbot SaaS</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+  <style>
+    body { font-family: Arial; background: #f5f5f5; }
+    .chat-container { width: 400px; margin: 50px auto; background: white; border-radius: 10px; padding: 10px; position: relative; }
+    .chat-header { font-weight: bold; text-align: center; margin-bottom: 5px; }
+    .chat-status { font-size: 12px; color: #555; text-align: center; margin-bottom: 5px; }
+    .chat-messages { height: 300px; overflow-y: auto; border: 1px solid #ddd; padding: 5px; border-radius: 5px; background: #fafafa; }
+    .message { padding: 5px; margin: 5px 0; border-radius: 5px; }
+    .user { background: #cce5ff; text-align: right; }
+    .bot { background: #e2e3e5; text-align: left; }
+    .chat-input { display: flex; margin-top: 10px; }
+    .chat-input input { flex: 1; padding: 5px; }
+    .chat-input button { padding: 5px; }
+    #micBtn, #upgradeBtn { margin-top: 10px; padding: 5px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <div class="chat-header">WAN Chatbot SaaS</div>
+    <div class="chat-status" id="chatStatus">Plan: Free | Queries used: 0</div>
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="chat-input">
+      <input type="text" id="userInput" placeholder="Send a message...">
+      <button onclick="sendMessage()">➤</button>
+    </div>
+    <button id="micBtn">🎤</button>
+  </div>
+
+  <div class="bot-animation">
+    <lottie-player 
+      src="https://lottie.host/e777123a-66f1-4ca6-b4f4-6fef9ae28d84/LD24ZYKBT5.json"  
+      background="transparent"  
+      speed="1"  
+      style="width: 150px; height: 150px;"  
+      loop autoplay>
+    </lottie-player>
+  </div>
+
+  <script>
+    const USER_ID = "Samuel"; // mock user
+    const API_URL = "http://127.0.0.1:8000";
+
+    const statusEl = document.getElementById("chatStatus");
+
+    // Update the plan & queries status
+    function updateStatus(plan, queries) {
+      statusEl.innerText = `Plan: ${plan.charAt(0).toUpperCase() + plan.slice(1)} | Queries used: ${queries}`;
+    }
+
+    function addMessage(text, sender) {
+      const chatBox = document.getElementById("chatMessages");
+      const msg = document.createElement("div");
+      msg.classList.add("message", sender);
+      msg.innerText = text;
+      chatBox.appendChild(msg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById("userInput");
+      const message = input.value.trim();
+      if (!message) return;
+      addMessage(message, "user");
+      input.value = "";
+
+      try {
+        const res = await fetch(`${API_URL}/chat`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user_id: USER_ID, message })
+        });
+        const data = await res.json();
+        addMessage(data.reply, "bot");
+
+        // Update plan & queries
+        updateStatus(data.plan, data.queries_used);
+      } catch (err) {
+        addMessage("Error connecting to server.", "bot");
+      }
+    }
+
+    // Load previous history and update status
+    async function loadHistory() {
+      try {
+        const res = await fetch(`${API_URL}/history/${USER_ID}`);
+        const data = await res.json();
+        data.history.forEach(item => {
+          addMessage(item.user, "user");
+          addMessage(item.bot, "bot");
+        });
+        updateStatus(data.plan, data.queries_used);
+      } catch (err) {
+        console.log("No previous history.");
+      }
+    }
+    loadHistory();
+
+    // Upgrade user to Premium
+    document.getElementById("upgradeBtn").onclick = async () => {
+      try {
+        const res = await fetch(`${API_URL}/upgrade`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user_id: USER_ID })
+        });
+        const data = await res.json();
+        alert(data.message);
+        // Update status to premium
+        updateStatus("premium", 0); // reset queries for demo
+      } catch (err) {
+        alert("Upgrade failed.");
+      }
+    }
+
+    // Speech-to-text
+    const micBtn = document.getElementById("micBtn");
+    let recognition;
+    if ("webkitSpeechRecognition" in window) {
+      recognition = new webkitSpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = "en-US";
+
+      recognition.onstart = () => micBtn.classList.add("recording");
+      recognition.onend = () => micBtn.classList.remove("recording");
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById("userInput").value = transcript;
+        sendMessage();
+      };
+
+      micBtn.onclick = () => recognition.start();
+    } else {
+      micBtn.disabled = true;
+      micBtn.innerText = "Not Supported";
+    }
+  </script>
+</body>
+</html>
