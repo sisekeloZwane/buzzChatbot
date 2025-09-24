@@ -92,10 +92,10 @@ body {
 /* Mic button as floating circle above send */
 #micBtn {
   position: absolute;
-  bottom: 10px;   /* lift above the chat-input */
+  bottom: 60px;   /* lift above the chat-input */
   right: 20px;    /* aligned to right */
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   background: #6a7f4e;
   color: white;
@@ -109,5 +109,5 @@ body {
 }
 
 #micBtn.recording {
-  background: red;
+  background: red;
 }
